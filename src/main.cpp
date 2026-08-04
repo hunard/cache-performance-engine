@@ -1,6 +1,7 @@
 #include <iostream>
 #include "cache.h"
 #include "trace_reader.h"
+#include "gpu_memory_model.h"
 int main() {
     // TEST 1 - Cold cache (all compulsory misses)
     std::cout << "=== TEST 1: Cold Cache ===" << std::endl;
@@ -107,4 +108,23 @@ if (linkedReader.isOpen()) {
     }
     linkedCache.printStats();
 }
+// TEST 7 - GPU Memory Coalescing
+std::cout << std::dec;
+std::cout << "\n=== TEST 7: GPU Memory Coalescing ===" << std::endl;
+
+GPUMemoryModel gpu;
+
+std::cout << "\nCoalesced Access (stride 4 bytes):" << std::endl;
+WarpAccess coalesced = gpu.accessCoalesced(0x0);
+std::cout << "Threads: " << coalesced.numThreads << std::endl;
+std::cout << "Memory Transactions: " << coalesced.memoryTransactions << std::endl;
+std::cout << "Coalesced: " << (coalesced.isCoalesced ? "YES" : "NO") << std::endl;
+
+std::cout << "\nUncoalesced Access (stride 128 bytes):" << std::endl;
+WarpAccess uncoalesced = gpu.accessUncoalesced(0x0, 128);
+std::cout << "Threads: " << uncoalesced.numThreads << std::endl;
+std::cout << "Memory Transactions: " << uncoalesced.memoryTransactions << std::endl;
+std::cout << "Coalesced: " << (uncoalesced.isCoalesced ? "YES" : "NO") << std::endl;
+
+gpu.printStats();
 }
