@@ -1,0 +1,4 @@
+/home/hunar/cache-performance-engine/build/CMakeFiles/cache.dir
+/home/hunar/cache-performance-engine/build/CMakeFiles/generate_traces.dir
+/home/hunar/cache-performance-engine/build/CMakeFiles/edit_cache.dir
+/home/hunar/cache-performance-engine/build/CMakeFiles/rebuild_cache.dir

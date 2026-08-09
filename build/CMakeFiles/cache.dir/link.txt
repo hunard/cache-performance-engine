@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/cache.dir/link.d CMakeFiles/cache.dir/src/main.cpp.o CMakeFiles/cache.dir/src/cache.cpp.o CMakeFiles/cache.dir/src/trace_reader.cpp.o CMakeFiles/cache.dir/src/gpu_memory_model.cpp.o -o cache
