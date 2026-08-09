@@ -142,12 +142,26 @@ generate_traces/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_traces.dir/build.make CMakeFiles/generate_traces.dir/build
 .PHONY : generate_traces/fast
 
+#=============================================================================
+# Target rules for targets named run_tests
+
+# Build rule for target.
+run_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 run_tests
+.PHONY : run_tests
+
+# fast build rule for target.
+run_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
+.PHONY : run_tests/fast
+
 src/cache.o: src/cache.cpp.o
 .PHONY : src/cache.o
 
 # target to build an object file
 src/cache.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cache.dir/build.make CMakeFiles/cache.dir/src/cache.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/src/cache.cpp.o
 .PHONY : src/cache.cpp.o
 
 src/cache.i: src/cache.cpp.i
@@ -156,6 +170,7 @@ src/cache.i: src/cache.cpp.i
 # target to preprocess a source file
 src/cache.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cache.dir/build.make CMakeFiles/cache.dir/src/cache.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/src/cache.cpp.i
 .PHONY : src/cache.cpp.i
 
 src/cache.s: src/cache.cpp.s
@@ -164,6 +179,7 @@ src/cache.s: src/cache.cpp.s
 # target to generate assembly for a file
 src/cache.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cache.dir/build.make CMakeFiles/cache.dir/src/cache.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/src/cache.cpp.s
 .PHONY : src/cache.cpp.s
 
 src/gpu_memory_model.o: src/gpu_memory_model.cpp.o
@@ -238,6 +254,30 @@ src/trace_reader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cache.dir/build.make CMakeFiles/cache.dir/src/trace_reader.cpp.s
 .PHONY : src/trace_reader.cpp.s
 
+tests/test_cache.o: tests/test_cache.cpp.o
+.PHONY : tests/test_cache.o
+
+# target to build an object file
+tests/test_cache.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/test_cache.cpp.o
+.PHONY : tests/test_cache.cpp.o
+
+tests/test_cache.i: tests/test_cache.cpp.i
+.PHONY : tests/test_cache.i
+
+# target to preprocess a source file
+tests/test_cache.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/test_cache.cpp.i
+.PHONY : tests/test_cache.cpp.i
+
+tests/test_cache.s: tests/test_cache.cpp.s
+.PHONY : tests/test_cache.s
+
+# target to generate assembly for a file
+tests/test_cache.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/test_cache.cpp.s
+.PHONY : tests/test_cache.cpp.s
+
 traces/generate_traces.o: traces/generate_traces.cpp.o
 .PHONY : traces/generate_traces.o
 
@@ -272,6 +312,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... cache"
 	@echo "... generate_traces"
+	@echo "... run_tests"
 	@echo "... src/cache.o"
 	@echo "... src/cache.i"
 	@echo "... src/cache.s"
@@ -284,6 +325,9 @@ help:
 	@echo "... src/trace_reader.o"
 	@echo "... src/trace_reader.i"
 	@echo "... src/trace_reader.s"
+	@echo "... tests/test_cache.o"
+	@echo "... tests/test_cache.i"
+	@echo "... tests/test_cache.s"
 	@echo "... traces/generate_traces.o"
 	@echo "... traces/generate_traces.i"
 	@echo "... traces/generate_traces.s"

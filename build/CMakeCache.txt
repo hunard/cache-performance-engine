@@ -230,6 +230,9 @@ CachePerformanceEngine_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 CachePerformanceEngine_SOURCE_DIR:STATIC=/home/hunar/cache-performance-engine
 
+//The directory containing a CMake configuration file for GTest.
+GTest_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/GTest
+
 
 ########################
 # INTERNAL cache entries
@@ -313,6 +316,8 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
+//Test CMAKE_HAVE_LIBC_PTHREAD
+CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=/home/hunar/cache-performance-engine
@@ -382,4 +387,6 @@ CMAKE_TAPI-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding GTest
+FIND_PACKAGE_MESSAGE_DETAILS_GTest:INTERNAL=[/usr/lib/x86_64-linux-gnu/cmake/GTest/GTestConfig.cmake][ ][v1.17.0()]
 

@@ -13,3 +13,15 @@ add_executable(cache
 add_executable(generate_traces
     traces/generate_traces.cpp
 )
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+add_executable(run_tests
+    tests/test_cache.cpp
+    src/cache.cpp
+)
+
+target_link_libraries(run_tests
+    ${GTEST_LIBRARIES}
+    pthread
+)
