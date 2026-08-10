@@ -1,145 +1,157 @@
-# Cache Performance Analysis Engine
+<div align="center">
 
-A low-level cache simulator built in C++ that models how memory access patterns
-interact with CPU cache behavior — built to answer one question: why does the 
-same data access run at wildly different speeds depending on how it touches memory.
+# ⚡ Cache Performance Analysis Engine
 
----
+<img src="analysis/cache_performance.png" width="800"/>
 
-## What it does
+### *Proving why some programs are 100x slower than others — at the hardware level*
 
-- Simulates a direct-mapped cache with configurable size and block size
-- Decomposes memory addresses into tag, index, and offset
-- Detects cache hits and misses on every memory access
-- Classifies every miss as either **compulsory** or **conflict**
-- Reports hit rate, total accesses, hits, and misses
+![C++](https://img.shields.io/badge/C++-17-blue?style=flat-square&logo=cplusplus)
+![CMake](https://img.shields.io/badge/CMake-4.2-green?style=flat-square&logo=cmake)
+![Python](https://img.shields.io/badge/Python-3.14-yellow?style=flat-square&logo=python)
+![Tests](https://img.shields.io/badge/Tests-5%2F5%20Passing-brightgreen?style=flat-square)
+![Phase](https://img.shields.io/badge/Phase-5%2F5%20Complete-purple?style=flat-square)
 
----
-
-## Why cache performance matters
-
-Cache is the small, fast memory sitting between your CPU and RAM. Every time
-the CPU needs data, it checks the cache first. A hit means instant access.
-A miss means a trip to RAM — which can be 100x slower. The hit rate is the 
-single number that determines how fast your program actually runs.
+</div>
 
 ---
 
-## Miss Classification
+## The Question That Started This
 
-| Miss Type | Cause | Avoidable? |
-|-----------|-------|------------|
-| Compulsory | First time this memory block has ever been accessed | No |
-| Conflict | Block was cached before but got evicted by another address mapping to the same slot | Yes |
+> *Why does the exact same algorithm run 100x slower just by changing how it touches memory?*
+
+I built this engine to answer that question from first principles — not by running an existing tool, but by building the tool itself.
 
 ---
 
-## Build and Run
+## Results That Prove It
+
+| Access Pattern | Real Accesses | Hit Rate | Verdict |
+|---------------|---------------|----------|---------|
+| Matrix Multiply | 786,432 | **62.1%** | ✅ Cache friendly |
+| Linked List | 1,000 | **0%** | ❌ Cache hostile |
+
+| GPU Pattern | Threads | Transactions | Efficiency |
+|------------|---------|--------------|------------|
+| Coalesced | 32 | **1** | ✅ 32x faster |
+| Uncoalesced | 32 | **32** | ❌ Maximum waste |
+
+> Same machine. Same cache size. Same number of threads.
+> The only difference is how memory is accessed.
+
+---
+
+## What It Does
+
+```
+Memory Address → [Tag | Index | Offset] → Cache Lookup → HIT or MISS
+                                                              ↓
+                                              MISS → Compulsory or Conflict?
+                                                     Compulsory = unavoidable
+                                                     Conflict   = fixable
+```
+
+- **Direct-mapped + Set-associative cache** (1-way, 2-way, 4-way)
+- **LRU vs FIFO replacement** — proved LRU outperforms FIFO with real data
+- **Real memory trace generation** — instruments actual C++ programs
+- **GPU memory coalescing model** — 1 transaction vs 32 transactions
+- **5 Google Test unit tests** — all passing
+- **CMake build system** — professional engineering standard
+
+---
+
+## Run It
 
 ```bash
-g++ -std=c++17 main.cpp cache.cpp -o cache && ./cache
+# Build
+mkdir build && cd build && cmake .. && make
+
+# Run all 7 test scenarios (from project root)
+cd .. && ./build/cache
+
+# Generate real memory traces
+./build/generate_traces
+
+# Run unit tests
+./build/run_tests
+
+# Generate benchmark graphs
+python3 analysis/visualize.py
 ```
 
 ---
 
-## Sample Output
-=== TEST 1: Cold Cache ===
+## Live Output
 
-Address 0x0 -> MISS
+```
+=== TEST 6: Real Trace Analysis ===
 
-Address 0x20 -> MISS
+Matrix Multiply (2-way, 1KB cache):
+Total Accesses:    786432
+Hits:              488460
+Hit Rate:          62.1109%
+Compulsory Misses: 1632
+Conflict Misses:   296340
 
-Address 0x40 -> MISS
-
-Address 0x60 -> MISS
-
-Address 0x80 -> MISS
-
---- Cache Stats ---
-
-Total Accesses:    5
-
+Linked List (2-way, 1KB cache):
+Total Accesses:    1000
 Hits:              0
-
-Misses:            5
-
 Hit Rate:          0%
+Compulsory Misses: 1000
 
-Compulsory Misses: 5
+=== TEST 7: GPU Memory Coalescing ===
 
-Conflict Misses:   0
-=== TEST 2: Perfect Locality ===
-Address 0x0 -> MISS
-
-Address 0x20 -> MISS
-
-Address 0x40 -> MISS
-
-Address 0x0 -> HIT
-
-Address 0x20 -> HIT
-
-Address 0x40 -> HIT
-
---- Cache Stats ---
-
-Total Accesses:    6
-
-Hits:              3
-
-Misses:            3
-
-Hit Rate:          50%
-
-Compulsory Misses: 3
-
-Conflict Misses:   0
-=== TEST 3: Conflict Pattern ===
-
-Address 0x0 -> MISS
-
-Address 0x400 -> MISS
-
-Address 0x0 -> MISS
-
-Address 0x400 -> MISS
-
-Address 0x0 -> MISS
---- Cache Stats ---
-
-Total Accesses:    5
-
-Hits:              0
-
-Misses:            5
-
-Hit Rate:          0%
-
-Compulsory Misses: 2
-
-Conflict Misses:   3
+Coalesced Access:   32 threads → 1 transaction  ✓
+Uncoalesced Access: 32 threads → 32 transactions ✗
+```
 
 ---
 
-## Project Structure
+## Architecture
+
+```
 cache-performance-engine/
+├── src/
+│   ├── cache.h / cache.cpp           → Core simulator
+│   ├── trace_reader.h / .cpp         → Real trace ingestion
+│   ├── gpu_memory_model.h / .cpp     → GPU coalescing model
+│   └── main.cpp                      → 7 test scenarios
+├── traces/
+│   ├── generate_traces.cpp           → Program instrumentation
+│   ├── matrix.trace                  → 786,432 real addresses
+│   └── linkedlist.trace              → 1,000 real addresses
+├── tests/
+│   └── test_cache.cpp                → Google Test suite
+├── analysis/
+│   ├── visualize.py                  → Benchmark graphs
+│   └── cache_performance.png         → Results
+├── CMakeLists.txt
+└── docs/design_decisions.md
+```
 
-├── cache.h          → Cache class declaration
+---
 
-├── cache.cpp        → Cache implementation
+## Why Build This Instead of Using gem5 or Valgrind?
 
-├── main.cpp         → Test suite
+Running gem5 gives you numbers. Building it gives you understanding.
 
-└── docs/
-
-└── design_decisions.md
+Every result this engine produces — I can explain exactly why it happened, which line of code produced it, and what changing the cache configuration would do to it. That's the difference between using a tool and understanding what the tool is doing.
 
 ---
 
 ## Roadmap
 
-- [x] Phase 1 — Direct-mapped cache simulator with miss classification
-- [ ] Phase 2 — Set-associative cache with LRU and FIFO replacement policies
-- [ ] Phase 3 — Real memory trace analysis with Python visualization
-- [ ] Phase 4 — GPU memory coalescing model
-- [ ] Phase 5 — Benchmarking report and final 
+- [x] Phase 1 — Direct-mapped cache with miss classification
+- [x] Phase 2 — Set-associative cache + LRU and FIFO
+- [x] Phase 3 — Real trace analysis + Python visualization
+- [x] Phase 4 — GPU memory coalescing model
+- [x] Phase 5 — CMake + Google Test + documentation
+- [ ] Phase 6 — Interactive real-time dashboard
+
+---
+
+<div align="center">
+
+*Built from scratch. Every line understood.*
+
+</div>
